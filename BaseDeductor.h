@@ -2,6 +2,12 @@
 
 #include "TaxDatabase.h"
 
+/**
+ * Base class for chain of responsibility pattern for
+ * deducting different types of tax from an initial amount.
+ * 
+ * @author Gary Hannah
+ */
 class BaseDeductor
 {
 protected:

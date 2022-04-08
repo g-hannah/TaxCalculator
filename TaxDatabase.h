@@ -1,8 +1,14 @@
 #pragma once
 
 #include <vector>
-#include "JsonHandler.h"
+#include <iostream>
 
+/**
+ * A singleton class which handles retrieval and storage
+ * of information various types of tax bands and rates.
+ * 
+ * @author Gary Hannah
+ */
 class TaxDatabase
 {
 private:

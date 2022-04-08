@@ -1,5 +1,4 @@
 #include "NationalInsuranceDeductor.h"
-#include <iostream>
 
 double NationalInsuranceDeductor::Deduct(double amount)
 {
