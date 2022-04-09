@@ -28,5 +28,23 @@
       0.135,
       0.0325
     ]
+  },
+  "student_loan": {
+    "plan1": {
+      "threshold": 20184.0,
+      "rate": 0.09
+    },
+    "plan2": {
+      "threshold": 27288.0,
+      "rate": 0.09
+    },
+    "plan4": {
+      "threshold": 25368.0,
+      "rate": 0.09
+    },
+    "postgrad": {
+      "threshold": 21000.0,
+      "rate": 0.06
+    }
   }
 }
