@@ -5,7 +5,7 @@
  */
 TaxDatabase* TaxDatabase::instance = nullptr;
 
-void TaxDatabase::GetData()
+void TaxDatabase::ReadData()
 {
   std::fstream fs;
   fs.open(resourceFile, std::ios::in);
@@ -24,13 +24,18 @@ void TaxDatabase::GetData()
     rapidjson::Document document;
 
     document.Parse(json.str().c_str());
+
     rapidjson::Value& incomeTaxNode = document["income_tax"];
     rapidjson::Value& nationalInsuranceNode = document["national_insurance"];
+    rapidjson::Value& studentLoanNode = document["student_loan"];
 
     RAPIDJSON_ASSERT(incomeTaxNode.IsObject());
     RAPIDJSON_ASSERT(nationalInsuranceNode.IsObject());
+    RAPIDJSON_ASSERT(studentLoanNode.IsObject());
 
-    if (incomeTaxNode.IsObject() && nationalInsuranceNode.IsObject())
+    if (incomeTaxNode.IsObject() &&
+        nationalInsuranceNode.IsObject() &&
+        studentLoanNode.IsObject())
     {
       rapidjson::Value& iBandsNode = incomeTaxNode["bands"];
       rapidjson::Value& iRatesNode = incomeTaxNode["rates"];
@@ -59,46 +64,117 @@ void TaxDatabase::GetData()
       }
     }
 
+    rapidjson::Value& plan1Node = studentLoanNode["plan1"];
+    rapidjson::Value& plan2Node = studentLoanNode["plan2"];
+    rapidjson::Value& plan4Node = studentLoanNode["plan4"];
+    rapidjson::Value& planPostGradNode = studentLoanNode["postgrad"];
+
+    RAPIDJSON_ASSERT(plan1Node.IsObject());
+    RAPIDJSON_ASSERT(plan2Node.IsObject());
+    RAPIDJSON_ASSERT(plan4Node.IsObject());
+    RAPIDJSON_ASSERT(planPostGradNode.IsObject());
+
+    using SLData = std::pair<Threshold, Rate>;
+    using MapPair = std::pair<StudentLoanPlan, std::pair<Threshold, Rate>>;
+
+    if (plan1Node.IsObject() &&
+        plan2Node.IsObject() &&
+        plan4Node.IsObject() &&
+        planPostGradNode.IsObject())
+    {
+      SLData data = std::make_pair<TaxDatabase::Threshold,TaxDatabase::Rate>(
+        plan1Node["threshold"].GetDouble(),
+        plan1Node["rate"].GetDouble()
+      );
+
+      studentLoansData.insert(MapPair(StudentLoanPlan::ePlan1, data));
+
+      data = std::make_pair<TaxDatabase::Threshold, TaxDatabase::Rate>(
+        plan2Node["threshold"].GetDouble(),
+        plan2Node["rate"].GetDouble()
+      );
+
+      studentLoansData.insert(MapPair(StudentLoanPlan::ePlan2, data));
+
+      data = std::make_pair<TaxDatabase::Threshold, TaxDatabase::Rate>(
+        plan4Node["threshold"].GetDouble(),
+        plan4Node["rate"].GetDouble()
+      );
+
+      studentLoansData.insert(MapPair(StudentLoanPlan::ePlan4, data));
+
+      data = std::make_pair<TaxDatabase::Threshold, TaxDatabase::Rate>(
+        planPostGradNode["threshold"].GetDouble(),
+        planPostGradNode["rate"].GetDouble()
+      );
+
+      studentLoansData.insert(MapPair(StudentLoanPlan::ePostGrad, data));
+    }
+
     haveData = true;
+  }
+}
+
+std::vector<double> TaxDatabase::GetData(TaxDataType type)
+{
+  if (!haveData)
+    ReadData();
+
+  switch (type)
+  {
+  default:
+  case TaxDataType::eNIRates:
+    return nationalInsuranceRates;
+  case TaxDataType::eNIBands:
+    return nationalInsuranceBands;
+  case TaxDataType::eITRates:
+    return incomeTaxRates;
+  case TaxDataType::eITBands:
+    return incomeTaxBands;
   }
 }
 
 std::vector<double> TaxDatabase::GetIncomeTaxRates()
 {
-  if (haveData)
-    return incomeTaxRates;
-
-  GetData();
-
-  return incomeTaxRates;
+  return GetData(TaxDataType::eITRates);
 }
 
 std::vector<double> TaxDatabase::GetIncomeTaxBands()
 {
-  if (haveData)
-    return incomeTaxRates;
-
-  GetData();
-
-  return incomeTaxBands;
+  return GetData(TaxDataType::eITBands);
 }
 
 std::vector<double> TaxDatabase::GetNationalInsuranceRates()
 {
-  if (haveData)
-    return nationalInsuranceRates;
-
-  GetData();
-
-  return nationalInsuranceRates;
+  return GetData(TaxDataType::eNIRates);
 }
 
 std::vector<double> TaxDatabase::GetNationalInsuranceBands()
 {
-  if (haveData)
-    return nationalInsuranceBands;
+  return GetData(TaxDataType::eNIBands);
+}
 
-  GetData();
+std::pair<TaxDatabase::Threshold,TaxDatabase::Rate> TaxDatabase::GetStudentLoanData(StudentLoanPlan plan)
+{
+  if (!haveData)
+    ReadData();
 
-  return nationalInsuranceBands;
+  std::map<StudentLoanPlan, std::pair<double, double>>::iterator iter = studentLoansData.find(plan);
+
+  if (iter != studentLoansData.end())
+    return iter->second;
+
+  throw std::exception();
+}
+
+double TaxDatabase::GetStudentLoanThreshold(StudentLoanPlan plan)
+{
+  std::pair<Threshold, Rate> data = GetStudentLoanData(plan);
+  return data.first;
+}
+
+double TaxDatabase::GetStudentLoanRate(StudentLoanPlan plan)
+{
+  std::pair<Threshold, Rate> data = GetStudentLoanData(plan);
+  return data.second;
 }
