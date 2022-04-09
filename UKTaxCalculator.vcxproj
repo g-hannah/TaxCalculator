@@ -140,18 +140,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseDeductor.cpp" />
+    <ClCompile Include="IncomeTax.cpp" />
     <ClCompile Include="IncomeTaxDeductor.cpp" />
     <ClCompile Include="NationalInsuranceDeductor.cpp" />
     <ClCompile Include="StudentLoanDeductor.cpp" />
+    <ClCompile Include="Tax.cpp" />
     <ClCompile Include="TaxDatabase.cpp" />
     <ClCompile Include="UKTaxCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseDeductor.h" />
+    <ClInclude Include="IncomeTax.h" />
     <ClInclude Include="IncomeTaxDeductor.h" />
     <ClInclude Include="NationalInsuranceDeductor.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StudentLoanDeductor.h" />
+    <ClInclude Include="Tax.h" />
     <ClInclude Include="TaxDatabase.h" />
   </ItemGroup>
   <ItemGroup>
