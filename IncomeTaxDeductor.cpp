@@ -2,12 +2,29 @@
 #include <string>
 #include <sstream>
 
+using namespace UKTax::Deductors;
+
 double IncomeTaxDeductor::Deduct(double amount)
 {
+  if (0.0 >= amount)
+    return amount;
+
   TaxDatabase* database = TaxDatabase::GetInstance();
 
-  const std::vector<double> niBands = database->GetIncomeTaxBands();
-  const std::vector<double> niRates = database->GetIncomeTaxRates();
+  IncomeTax incomeTax = database->GetIncomeTax(region);
+  std::vector<double> niBands = incomeTax.GetBands();
+  std::vector<double> niRates = incomeTax.GetRates();
+  const double noAllowanceThreshold = incomeTax.GetNoAllowanceThreshold();
+
+  /*
+   * If the gross salary is greater than this threshold,
+   * there is no "personal allowance" anymore. Thus,
+   * the first rate (0.0) becomes the same as the second.
+   */
+  if (amount > noAllowanceThreshold)
+  {
+    niRates[0] = niRates[1];
+  }
 
   double totalTax = 0.0;
   double amountTaxed = 0.0;

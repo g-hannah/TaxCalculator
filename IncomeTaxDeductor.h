@@ -7,9 +7,20 @@
  * 
  * @author Gary Hannah
  */
-class IncomeTaxDeductor : public BaseDeductor
+namespace UKTax
 {
-public:
-  IncomeTaxDeductor() { }
-  double Deduct(double);
+  namespace Deductors
+  {
+    class IncomeTaxDeductor : public BaseDeductor
+    {
+    public:
+      IncomeTaxDeductor() : region(TaxDatabase::UKRegion::eEngland) { }
+      IncomeTaxDeductor(TaxDatabase::UKRegion region) : region(region) { }
+
+      double Deduct(double);
+
+    private:
+      TaxDatabase::UKRegion region;
+    };
+  };
 };
