@@ -1,9 +1,48 @@
 #include "TaxDatabase.h"
 
+using namespace UKTax;
+
 /*
  * Initialise the singleton instance to null
  */
 TaxDatabase* TaxDatabase::instance = nullptr;
+
+IncomeTax TaxDatabase::ParseIncomeTaxData(rapidjson::Value& node)
+{
+  RAPIDJSON_ASSERT(node.IsObject());
+
+  rapidjson::Value& incomeTaxNode = node["income_tax"];
+  RAPIDJSON_ASSERT(incomeTaxNode.IsObject());
+
+  rapidjson::Value& bandsNode = incomeTaxNode["bands"];
+  RAPIDJSON_ASSERT(bandsNode.IsArray());
+
+  rapidjson::Value& ratesNode = incomeTaxNode["rates"];
+  RAPIDJSON_ASSERT(ratesNode.IsArray());
+
+  std::vector<double> bands;
+  std::vector<double> rates;
+
+  RAPIDJSON_ASSERT(bands.size() == rates.size());
+
+  for (rapidjson::SizeType i = 0, n = bandsNode.Size(); i < n; ++i)
+  {
+    double band = bandsNode[i].GetDouble();
+    double rate = ratesNode[i].GetDouble();
+
+    bands.push_back(band);
+    rates.push_back(rate);
+  }
+
+  rapidjson::Value& noAllowanceNode = incomeTaxNode["no_allowance_threshold"];
+
+  RAPIDJSON_ASSERT(noAllowanceNode.IsDouble());
+  double noAllowanceThreshold = noAllowanceNode.GetDouble();
+
+  IncomeTax incomeTax(bands, rates, noAllowanceThreshold);
+
+  return incomeTax;
+}
 
 void TaxDatabase::ReadData()
 {
@@ -25,34 +64,33 @@ void TaxDatabase::ReadData()
 
     document.Parse(json.str().c_str());
 
-    rapidjson::Value& incomeTaxNode = document["income_tax"];
+    rapidjson::Value& scotlandNode = document["scotland"];
+    rapidjson::Value& englandNode = document["england"];
+
+    RAPIDJSON_ASSERT(scotlandNode.IsObject());
+    RAPIDJSON_ASSERT(englandNode.IsObject());
+
+    IncomeTax scotlandIncomeTax = ParseIncomeTaxData(scotlandNode);
+    IncomeTax englandIncomeTax = ParseIncomeTaxData(englandNode);
+
+    incomeTax.insert(std::pair<UKRegion, IncomeTax>(UKRegion::eScotland, scotlandIncomeTax));
+    incomeTax.insert(std::pair<UKRegion, IncomeTax>(UKRegion::eEngland, englandIncomeTax));
+    incomeTax.insert(std::pair<UKRegion, IncomeTax>(UKRegion::eWales, englandIncomeTax));
+    incomeTax.insert(std::pair<UKRegion, IncomeTax>(UKRegion::eNorthernIreland, englandIncomeTax));
+
     rapidjson::Value& nationalInsuranceNode = document["national_insurance"];
     rapidjson::Value& studentLoanNode = document["student_loan"];
 
-    RAPIDJSON_ASSERT(incomeTaxNode.IsObject());
     RAPIDJSON_ASSERT(nationalInsuranceNode.IsObject());
     RAPIDJSON_ASSERT(studentLoanNode.IsObject());
 
-    if (incomeTaxNode.IsObject() &&
-        nationalInsuranceNode.IsObject() &&
+    if (nationalInsuranceNode.IsObject() &&
         studentLoanNode.IsObject())
     {
-      rapidjson::Value& iBandsNode = incomeTaxNode["bands"];
-      rapidjson::Value& iRatesNode = incomeTaxNode["rates"];
       rapidjson::Value& niBandsNode = nationalInsuranceNode["bands"];
       rapidjson::Value& niRatesNode = nationalInsuranceNode["rates"];
 
-      RAPIDJSON_ASSERT(iBandsNode.Size() == iRatesNode.Size());
       RAPIDJSON_ASSERT(niBandsNode.Size() == niRatesNode.Size());
-
-      for (rapidjson::SizeType i = 0, n = iBandsNode.Size(); i < n; ++i)
-      {
-        const double band = iBandsNode[i].GetDouble();
-        const double rate = iRatesNode[i].GetDouble();
-
-        incomeTaxBands.push_back(band);
-        incomeTaxRates.push_back(rate);
-      }
 
       for (rapidjson::SizeType i = 0, n = niBandsNode.Size(); i < n; ++i)
       {
@@ -74,74 +112,105 @@ void TaxDatabase::ReadData()
     RAPIDJSON_ASSERT(plan4Node.IsObject());
     RAPIDJSON_ASSERT(planPostGradNode.IsObject());
 
-    using SLData = std::pair<Threshold, Rate>;
-    using MapPair = std::pair<StudentLoanPlan, std::pair<Threshold, Rate>>;
+    using Pair = std::pair<Threshold, Rate>;
+    using Mapping = std::pair<StudentLoanPlan, std::pair<Threshold, Rate>>;
 
     if (plan1Node.IsObject() &&
         plan2Node.IsObject() &&
         plan4Node.IsObject() &&
         planPostGradNode.IsObject())
     {
-      SLData data = std::make_pair<TaxDatabase::Threshold,TaxDatabase::Rate>(
+      Pair data = std::make_pair<Threshold, Rate>(
         plan1Node["threshold"].GetDouble(),
         plan1Node["rate"].GetDouble()
       );
 
-      studentLoansData.insert(MapPair(StudentLoanPlan::ePlan1, data));
+      studentLoansData.insert(Mapping(StudentLoanPlan::ePlan1, data));
 
-      data = std::make_pair<TaxDatabase::Threshold, TaxDatabase::Rate>(
+      data = std::make_pair<Threshold, Rate>(
         plan2Node["threshold"].GetDouble(),
         plan2Node["rate"].GetDouble()
       );
 
-      studentLoansData.insert(MapPair(StudentLoanPlan::ePlan2, data));
+      studentLoansData.insert(Mapping(StudentLoanPlan::ePlan2, data));
 
-      data = std::make_pair<TaxDatabase::Threshold, TaxDatabase::Rate>(
+      data = std::make_pair<Threshold, Rate>(
         plan4Node["threshold"].GetDouble(),
         plan4Node["rate"].GetDouble()
       );
 
-      studentLoansData.insert(MapPair(StudentLoanPlan::ePlan4, data));
+      studentLoansData.insert(Mapping(StudentLoanPlan::ePlan4, data));
 
-      data = std::make_pair<TaxDatabase::Threshold, TaxDatabase::Rate>(
+      data = std::make_pair<Threshold, Rate>(
         planPostGradNode["threshold"].GetDouble(),
         planPostGradNode["rate"].GetDouble()
       );
 
-      studentLoansData.insert(MapPair(StudentLoanPlan::ePostGrad, data));
+      studentLoansData.insert(Mapping(StudentLoanPlan::ePostGrad, data));
     }
 
     haveData = true;
   }
 }
 
-std::vector<double> TaxDatabase::GetData(TaxDataType type)
+std::vector<double> TaxDatabase::GetData(TaxDataType type, UKRegion region)
 {
   if (!haveData)
     ReadData();
+
+  std::map<UKRegion, IncomeTax>::iterator iter;
+  std::vector<double> emptyResult;
 
   switch (type)
   {
   default:
   case TaxDataType::eNIRates:
     return nationalInsuranceRates;
+
   case TaxDataType::eNIBands:
     return nationalInsuranceBands;
+
   case TaxDataType::eITRates:
-    return incomeTaxRates;
+
+    iter = incomeTax.find(region);
+    if (iter != incomeTax.end())
+    {
+      IncomeTax tax = iter->second;
+      return tax.GetRates();
+    }
+
+    return emptyResult;
+
   case TaxDataType::eITBands:
-    return incomeTaxBands;
+
+    iter = incomeTax.find(region);
+    if (iter != incomeTax.end())
+    {
+      IncomeTax tax = iter->second;
+      return tax.GetBands();
+    }
+
+    return emptyResult;
   }
 }
 
-std::vector<double> TaxDatabase::GetIncomeTaxRates()
+std::vector<double> TaxDatabase::GetIncomeTaxRates(UKRegion region)
 {
-  return GetData(TaxDataType::eITRates);
+  return GetData(TaxDataType::eITRates, region);
 }
 
-std::vector<double> TaxDatabase::GetIncomeTaxBands()
+std::vector<double> TaxDatabase::GetIncomeTaxBands(UKRegion region)
 {
-  return GetData(TaxDataType::eITBands);
+  return GetData(TaxDataType::eITBands, region);
+}
+
+IncomeTax TaxDatabase::GetIncomeTax(UKRegion region)
+{
+  std::map<UKRegion, IncomeTax>::iterator iter = incomeTax.find(region);
+  if (iter != incomeTax.end())
+    return iter->second;
+
+  throw std::exception();
 }
 
 std::vector<double> TaxDatabase::GetNationalInsuranceRates()
@@ -159,7 +228,7 @@ std::pair<TaxDatabase::Threshold,TaxDatabase::Rate> TaxDatabase::GetStudentLoanD
   if (!haveData)
     ReadData();
 
-  std::map<StudentLoanPlan, std::pair<double, double>>::iterator iter = studentLoansData.find(plan);
+  std::map<StudentLoanPlan, std::pair<Threshold, Rate>>::iterator iter = studentLoansData.find(plan);
 
   if (iter != studentLoansData.end())
     return iter->second;

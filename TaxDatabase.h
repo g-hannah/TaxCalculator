@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "IncomeTax.h"
 #include "include/rapidjson/rapidjson.h"
 #include "include/rapidjson/document.h"
 #include "include/rapidjson/stringbuffer.h"
@@ -15,66 +16,84 @@
  * 
  * @author Gary Hannah
  */
-class TaxDatabase
+namespace UKTax
 {
-private:
-  TaxDatabase() { }
-  ~TaxDatabase() { }
-
-  static TaxDatabase* instance;
-  const std::string resourceFile = "resources/income_tax.json";
-  void ReadData();
-
-  bool haveData = false;
-  std::vector<double> incomeTaxBands;
-  std::vector<double> incomeTaxRates;
-  std::vector<double> nationalInsuranceBands;
-  std::vector<double> nationalInsuranceRates;
-
-  enum class TaxDataType
+  class TaxDatabase
   {
-    eNIRates,
-    eNIBands,
-    eITRates,
-    eITBands
-  };
+  private:
+    TaxDatabase() { }
+    ~TaxDatabase() { }
 
-  enum class StudentLoanPlan; // forward declaration
-  std::map<StudentLoanPlan, std::pair<double, double>> studentLoansData;
+    static TaxDatabase* instance;
+    const std::string resourceFile = "resources/tax_data.json";
+    void ReadData();
+    IncomeTax ParseIncomeTaxData(rapidjson::Value&);
 
-  std::vector<double> GetData(TaxDataType);
+    bool haveData = false;
 
-public:
-  static TaxDatabase* GetInstance()
-  {
-    if (!instance)
+  public:
+    enum class UKRegion
     {
-      instance = new TaxDatabase();
+      eScotland,
+      eEngland,
+      eWales,
+      eNorthernIreland,
+      eAllRegions
+    };
+
+  private:
+
+    std::map<UKRegion, IncomeTax> incomeTax;
+
+    std::vector<double> nationalInsuranceBands;
+    std::vector<double> nationalInsuranceRates;
+
+    enum class TaxDataType
+    {
+      eNIRates,
+      eNIBands,
+      eITRates,
+      eITBands
+    };
+
+    enum class StudentLoanPlan; // forward declaration
+    std::map<StudentLoanPlan, std::pair<double, double>> studentLoansData;
+
+    std::vector<double> GetData(TaxDataType, UKRegion region = UKRegion::eAllRegions);
+
+  public:
+    static TaxDatabase* GetInstance()
+    {
+      if (!instance)
+      {
+        instance = new TaxDatabase();
+      }
+
+      return instance;
     }
 
-    return instance;
-  }
+    std::vector<double> GetIncomeTaxRates(UKRegion);
+    std::vector<double> GetIncomeTaxBands(UKRegion);
+    double GetIncomeTaxNoAllowanceThreshold(UKRegion);
+    IncomeTax GetIncomeTax(UKRegion);
+    std::vector<double> GetNationalInsuranceRates();
+    std::vector<double> GetNationalInsuranceBands();
 
-  std::vector<double> GetIncomeTaxRates();
-  std::vector<double> GetIncomeTaxBands();
-  std::vector<double> GetNationalInsuranceRates();
-  std::vector<double> GetNationalInsuranceBands();
+    using Threshold = double;
+    using Rate = double;
+    std::pair<Threshold, Rate> GetStudentLoanData(StudentLoanPlan);
+    double GetStudentLoanThreshold(StudentLoanPlan);
+    double GetStudentLoanRate(StudentLoanPlan);
 
-  using Threshold = double;
-  using Rate = double;
-  std::pair<Threshold,Rate> GetStudentLoanData(StudentLoanPlan);
-  double GetStudentLoanThreshold(StudentLoanPlan);
-  double GetStudentLoanRate(StudentLoanPlan);
-
-  enum class StudentLoanPlan
-  {
-    ePlan1,
-    ePlan2,
-    ePlan4,
-    ePostGrad
-  };
+    enum class StudentLoanPlan
+    {
+      ePlan1,
+      ePlan2,
+      ePlan4,
+      ePostGrad
+    };
 
 #define StudentLoanThreshold(pair) (pair).first
 #define StudentLoanRate(pair) (pair).second
+  };
 };
-
