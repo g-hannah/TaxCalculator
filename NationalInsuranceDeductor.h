@@ -7,10 +7,16 @@
  * 
  * @author Gary Hannah
  */
-class NationalInsuranceDeductor : public BaseDeductor
+namespace UKTax
 {
-public:
-  NationalInsuranceDeductor() { }
-  double Deduct(double);
+  namespace Deductors
+  {
+    class NationalInsuranceDeductor : public BaseDeductor
+    {
+    public:
+      NationalInsuranceDeductor() { }
+      double Deduct(double);
+    };
+  };
 };
 

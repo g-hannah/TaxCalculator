@@ -1,8 +1,11 @@
 #include "NationalInsuranceDeductor.h"
 
+using namespace UKTax::Deductors;
+
 double NationalInsuranceDeductor::Deduct(double amount)
 {
-  //std::cerr << "NI deduction: received value " << amount << std::endl;
+  if (0.0 >= amount)
+    return amount;
 
   TaxDatabase* database = TaxDatabase::GetInstance();
 

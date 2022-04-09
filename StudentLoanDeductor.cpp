@@ -1,7 +1,12 @@
 #include "StudentLoanDeductor.h"
 
+using namespace UKTax::Deductors;
+
 double StudentLoanDeductor::Deduct(double amount)
 {
+  if (0.0 >= amount)
+    return amount;
+
   TaxDatabase* database = TaxDatabase::GetInstance();
   std::pair<TaxDatabase::Threshold,TaxDatabase::Rate> data = database->GetStudentLoanData(plan);
 
