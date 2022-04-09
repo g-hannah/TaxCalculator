@@ -8,32 +8,38 @@
  * 
  * @author Gary Hannah
  */
-class BaseDeductor
+namespace UKTax
 {
-protected:
-  BaseDeductor* next;
-
-  double TaxForAmount(double, double, double);
-public:
-  BaseDeductor() : next(nullptr) { }
-
-  BaseDeductor* SetNext(BaseDeductor* next)
+  namespace Deductors
   {
-    this->next = next;
-    return next;
-  }
+    class BaseDeductor
+    {
+    protected:
+      BaseDeductor* next;
 
-  virtual ~BaseDeductor()
-  {
-    if (next)
-      delete next;
-  }
+      double TaxForAmount(double, double, double);
+    public:
+      BaseDeductor() : next(nullptr) { }
 
-  virtual double Deduct(double amount)
-  {
-    if (next)
-      return next->Deduct(amount);
+      BaseDeductor* SetNext(BaseDeductor* next)
+      {
+        this->next = next;
+        return next;
+      }
 
-    return amount;
-  }
+      virtual ~BaseDeductor()
+      {
+        if (next)
+          delete next;
+      }
+
+      virtual double Deduct(double amount)
+      {
+        if (next)
+          return next->Deduct(amount);
+
+        return amount;
+      }
+    };
+  };
 };
