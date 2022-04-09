@@ -1,0 +1,70 @@
+{
+  "scotland": {
+    "income_tax": {
+      "bands": [
+        0.0,
+        12571,
+        14733,
+        25689,
+        43663,
+        150001
+      ],
+      "rates": [
+        0.0,
+        0.19,
+        0.20,
+        0.21,
+        0.41,
+        0.46
+      ],
+      "no_allowance_threshold": 125141.0
+    }
+  },
+  "england": {
+    "income_tax": {
+      "bands": [
+        0.0,
+        12571,
+        50271,
+        150001
+      ],
+      "rates": [
+        0.0,
+        0.20,
+        0.40,
+        0.45
+      ],
+      "no_allowance_threshold": 125141.0
+    }
+  },
+  "national_insurance": {
+    "bands": [
+      0.0,
+      12571.0,
+      50271.0
+    ],
+    "rates": [
+      0.0,
+      0.135,
+      0.0325
+    ]
+  },
+  "student_loan": {
+    "plan1": {
+      "threshold": 20184.0,
+      "rate": 0.09
+    },
+    "plan2": {
+      "threshold": 27288.0,
+      "rate": 0.09
+    },
+    "plan4": {
+      "threshold": 25368.0,
+      "rate": 0.09
+    },
+    "postgrad": {
+      "threshold": 21000.0,
+      "rate": 0.06
+    }
+  }
+}
