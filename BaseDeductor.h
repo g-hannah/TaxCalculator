@@ -12,6 +12,8 @@ class BaseDeductor
 {
 protected:
   BaseDeductor* next;
+
+  double TaxForAmount(double, double, double);
 public:
   BaseDeductor() : next(nullptr) { }
 
