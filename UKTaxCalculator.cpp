@@ -1,17 +1,20 @@
 #include <iostream>
 #include "IncomeTaxDeductor.h"
 #include "NationalInsuranceDeductor.h"
+#include "StudentLoanDeductor.h"
 
 int main()
 {
-  BaseDeductor* deductor = new IncomeTaxDeductor();
+  const double salary = 30000.0;
+  BaseDeductor* deductor = new NationalInsuranceDeductor();
 
-  deductor->SetNext(new NationalInsuranceDeductor());
+  deductor
+    ->SetNext(new IncomeTaxDeductor())
+    ->SetNext(new StudentLoanDeductor(TaxDatabase::StudentLoanPlan::ePlan4, salary));
 
-  const double salary = 25000.0;
   const double net = deductor->Deduct(salary);
 
-  std::cerr << net << std::endl;
+  std::cerr << "\nNet Salary\n" << net << std::endl;
 
   return 0;
 }

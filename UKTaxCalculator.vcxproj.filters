@@ -24,13 +24,13 @@
     <ClCompile Include="IncomeTaxDeductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JsonHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TaxDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NationalInsuranceDeductor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StudentLoanDeductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,13 +44,13 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JsonHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TaxDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NationalInsuranceDeductor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StudentLoanDeductor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

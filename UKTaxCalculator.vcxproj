@@ -141,17 +141,17 @@
   <ItemGroup>
     <ClCompile Include="BaseDeductor.cpp" />
     <ClCompile Include="IncomeTaxDeductor.cpp" />
-    <ClCompile Include="JsonHandler.cpp" />
     <ClCompile Include="NationalInsuranceDeductor.cpp" />
+    <ClCompile Include="StudentLoanDeductor.cpp" />
     <ClCompile Include="TaxDatabase.cpp" />
     <ClCompile Include="UKTaxCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseDeductor.h" />
     <ClInclude Include="IncomeTaxDeductor.h" />
-    <ClInclude Include="JsonHandler.h" />
     <ClInclude Include="NationalInsuranceDeductor.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="StudentLoanDeductor.h" />
     <ClInclude Include="TaxDatabase.h" />
   </ItemGroup>
   <ItemGroup>
