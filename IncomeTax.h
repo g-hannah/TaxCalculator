@@ -2,6 +2,11 @@
 
 #include "Tax.h"
 
+/**
+ * Class for storing specific income tax bands and rates
+ * 
+ * @author Gary Hannah
+ */
 namespace UKTax
 {
   class IncomeTax : public Tax
