@@ -21,7 +21,7 @@ double IncomeTaxDeductor::Deduct(double amount)
    * there is no "personal allowance" anymore. Thus,
    * the first rate (0.0) becomes the same as the second.
    */
-  if (amount > noAllowanceThreshold)
+  if (salary > noAllowanceThreshold)
   {
     niRates[0] = niRates[1];
   }
