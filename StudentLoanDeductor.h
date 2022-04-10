@@ -2,6 +2,11 @@
 
 #include "BaseDeductor.h"
 
+/**
+ * Derived class for deducting student loan tax.
+ * 
+ * @author Gary Hannah
+ */
 namespace UKTax
 {
   namespace Deductors

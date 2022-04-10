@@ -11,8 +11,8 @@
 #include "include/rapidjson/stringbuffer.h"
 
 /**
- * A singleton class which handles retrieval and storage
- * of information various types of tax bands and rates.
+ * Singleton class which handles retrieval and storage
+ * of information on various types of taxes.
  * 
  * @author Gary Hannah
  */
@@ -25,7 +25,7 @@ namespace UKTax
     ~TaxDatabase() { }
 
     static TaxDatabase* instance;
-    const std::string resourceFile = "resources/tax_data.json";
+    const std::string resourceFile = "resources/tax_data.json"; // XXX store string constants in external data file
     void ReadData();
     IncomeTax ParseIncomeTaxData(rapidjson::Value&);
 
@@ -56,7 +56,16 @@ namespace UKTax
       eITBands
     };
 
-    enum class StudentLoanPlan; // forward declaration
+  public:
+    enum class StudentLoanPlan
+    {
+      ePlan1,
+      ePlan2,
+      ePlan4,
+      ePostGrad
+    };
+
+  private:
     std::map<StudentLoanPlan, std::pair<double, double>> studentLoansData;
 
     std::vector<double> GetData(TaxDataType, UKRegion region = UKRegion::eAllRegions);
@@ -84,14 +93,6 @@ namespace UKTax
     std::pair<Threshold, Rate> GetStudentLoanData(StudentLoanPlan);
     double GetStudentLoanThreshold(StudentLoanPlan);
     double GetStudentLoanRate(StudentLoanPlan);
-
-    enum class StudentLoanPlan
-    {
-      ePlan1,
-      ePlan2,
-      ePlan4,
-      ePostGrad
-    };
 
 #define StudentLoanThreshold(pair) (pair).first
 #define StudentLoanRate(pair) (pair).second

@@ -2,6 +2,11 @@
 
 #include <vector>
 
+/**
+ * Generic interface for tax classes
+ * 
+ * @author Gary Hannah
+ */
 namespace UKTax
 {
   class Tax
