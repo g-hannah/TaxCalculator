@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseDeductor.cpp" />
+    <ClCompile Include="DeductorBuilder.cpp" />
     <ClCompile Include="IncomeTax.cpp" />
     <ClCompile Include="IncomeTaxDeductor.cpp" />
     <ClCompile Include="NationalInsuranceDeductor.cpp" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseDeductor.h" />
+    <ClInclude Include="DeductorBuilder.h" />
     <ClInclude Include="IncomeTax.h" />
     <ClInclude Include="IncomeTaxDeductor.h" />
     <ClInclude Include="NationalInsuranceDeductor.h" />

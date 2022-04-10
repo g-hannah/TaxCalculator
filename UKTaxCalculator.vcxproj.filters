@@ -39,6 +39,9 @@
     <ClCompile Include="Tax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DeductorBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseDeductor.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeductorBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
