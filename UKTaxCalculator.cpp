@@ -1,7 +1,6 @@
 #include <iostream>
-#include "IncomeTaxDeductor.h"
-#include "NationalInsuranceDeductor.h"
-#include "StudentLoanDeductor.h"
+#include <memory>
+#include "DeductorBuilder.h"
 #include "include/rapidjson/document.h"
 #include "include/rapidjson/stringbuffer.h"
 
@@ -37,19 +36,20 @@ static double GetSalary()
 int main()
 {
   const double salary = GetSalary();
-  UKTax::Deductors::BaseDeductor* deductor = new UKTax::Deductors::NationalInsuranceDeductor();
 
-  deductor
-    ->SetNext(new UKTax::Deductors::IncomeTaxDeductor(UKTax::TaxDatabase::UKRegion::eScotland))
-    ->SetNext(new UKTax::Deductors::StudentLoanDeductor(UKTax::TaxDatabase::StudentLoanPlan::ePlan4, salary));
+  std::unique_ptr<UKTax::Deductors::DeductorBuilder> builder = std::make_unique<UKTax::Deductors::DeductorBuilder>();
+
+  std::unique_ptr<UKTax::Deductors::BaseDeductor> deductor = builder
+    ->SetSalary(salary)
+    ->SetRegion(UKTax::TaxDatabase::UKRegion::eScotland)
+    ->SetStudentLoanPlan(UKTax::TaxDatabase::StudentLoanPlan::ePlan4)
+    ->Build();
 
   std::cerr << "\nGross Salary\n" << salary << std::endl;
 
   const double net = deductor->Deduct(salary);
 
   std::cerr << "\nNet Salary\n" << net << std::endl;
-
-  delete deductor;
 
   return 0;
 }
