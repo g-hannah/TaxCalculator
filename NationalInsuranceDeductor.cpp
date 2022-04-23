@@ -11,7 +11,7 @@ namespace UKTax
       if (0.0 >= amount)
         return amount;
 
-      TaxDatabase* database = TaxDatabase::GetInstance();
+      TaxDatabase* database = TaxDatabase::Instance();
 
       const NationalInsuranceTax& nationalInsuranceTax = database->GetNationalInsuranceTax(this->region);
 

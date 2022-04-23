@@ -72,7 +72,7 @@ namespace UKTax
     std::any GetData(TaxDataType type, std::any key);
 
   public:
-    static TaxDatabase* GetInstance()
+    static TaxDatabase* Instance()
     {
       if (!instance)
       {
