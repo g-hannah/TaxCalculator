@@ -9,10 +9,21 @@
  */
 namespace UKTax
 {
+  using TaxValue = double;
+  using TaxValues = std::vector<TaxValue>;
+  using TaxValuesIterator = std::vector<TaxValue>::iterator;
+
   class Tax
   {
+  protected:
+    TaxValue band;
+    TaxValue rate;
+    TaxValues bands;
+    TaxValues rates;
   public:
-    virtual std::vector<double> GetBands() = 0;
-    virtual std::vector<double> GetRates() = 0;
+    virtual double GetBand() const;
+    virtual double GetRate() const;
+    virtual TaxValues GetBands() const;
+    virtual TaxValues GetRates() const;
   };
 }
