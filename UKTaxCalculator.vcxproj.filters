@@ -18,7 +18,7 @@
     <ClCompile Include="UKTaxCalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BaseDeductor.cpp">
+    <ClCompile Include="BaseTaxDeductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IncomeTaxDeductor.cpp">
@@ -42,9 +42,15 @@
     <ClCompile Include="DeductorBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StudentLoanTax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NationalInsuranceTax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseDeductor.h">
+    <ClInclude Include="BaseTaxDeductor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IncomeTaxDeductor.h">
@@ -69,6 +75,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeductorBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StudentLoanTax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NationalInsuranceTax.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

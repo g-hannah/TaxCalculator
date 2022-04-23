@@ -116,6 +116,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\local\boost_1_71_0</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,24 +141,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BaseDeductor.cpp" />
+    <ClCompile Include="BaseTaxDeductor.cpp" />
     <ClCompile Include="DeductorBuilder.cpp" />
     <ClCompile Include="IncomeTax.cpp" />
     <ClCompile Include="IncomeTaxDeductor.cpp" />
     <ClCompile Include="NationalInsuranceDeductor.cpp" />
+    <ClCompile Include="NationalInsuranceTax.cpp" />
     <ClCompile Include="StudentLoanDeductor.cpp" />
+    <ClCompile Include="StudentLoanTax.cpp" />
     <ClCompile Include="Tax.cpp" />
     <ClCompile Include="TaxDatabase.cpp" />
     <ClCompile Include="UKTaxCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseDeductor.h" />
+    <ClInclude Include="BaseTaxDeductor.h" />
     <ClInclude Include="DeductorBuilder.h" />
     <ClInclude Include="IncomeTax.h" />
     <ClInclude Include="IncomeTaxDeductor.h" />
     <ClInclude Include="NationalInsuranceDeductor.h" />
+    <ClInclude Include="NationalInsuranceTax.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StudentLoanDeductor.h" />
+    <ClInclude Include="StudentLoanTax.h" />
     <ClInclude Include="Tax.h" />
     <ClInclude Include="TaxDatabase.h" />
   </ItemGroup>
