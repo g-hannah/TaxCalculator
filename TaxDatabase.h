@@ -5,7 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <any>
 #include "IncomeTax.h"
+#include "StudentLoanTax.h"
+#include "NationalInsuranceTax.h"
 #include "include/rapidjson/rapidjson.h"
 #include "include/rapidjson/document.h"
 #include "include/rapidjson/stringbuffer.h"
@@ -41,22 +44,6 @@ namespace UKTax
       eAllRegions
     };
 
-  private:
-
-    std::map<UKRegion, IncomeTax> incomeTax;
-
-    std::vector<double> nationalInsuranceBands;
-    std::vector<double> nationalInsuranceRates;
-
-    enum class TaxDataType
-    {
-      eNIRates,
-      eNIBands,
-      eITRates,
-      eITBands
-    };
-
-  public:
     enum class StudentLoanPlan
     {
       ePlan1,
@@ -66,9 +53,23 @@ namespace UKTax
     };
 
   private:
-    std::map<StudentLoanPlan, std::pair<double, double>> studentLoansData;
 
-    std::vector<double> GetData(TaxDataType, UKRegion region = UKRegion::eAllRegions);
+    std::map<UKRegion, IncomeTax> incomeTax;
+    std::map<StudentLoanPlan, StudentLoanTax> studentLoanTax;
+    std::map<UKRegion, NationalInsuranceTax> nationalInsuranceTax;
+
+    TaxValues nationalInsuranceBands;
+    TaxValues nationalInsuranceRates;
+
+    enum class TaxDataType
+    {
+      eNationalInsurance,
+      eIncomeTax,
+      eStudentLoanTax
+    };
+
+  private:
+    std::any GetData(TaxDataType type, std::any key);
 
   public:
     static TaxDatabase* GetInstance()
@@ -81,20 +82,11 @@ namespace UKTax
       return instance;
     }
 
-    std::vector<double> GetIncomeTaxRates(UKRegion);
-    std::vector<double> GetIncomeTaxBands(UKRegion);
-    double GetIncomeTaxNoAllowanceThreshold(UKRegion);
     IncomeTax GetIncomeTax(UKRegion);
+    NationalInsuranceTax GetNationalInsuranceTax(UKRegion);
+    StudentLoanTax GetStudentLoanTax(StudentLoanPlan);
+
     std::vector<double> GetNationalInsuranceRates();
     std::vector<double> GetNationalInsuranceBands();
-
-    using Threshold = double;
-    using Rate = double;
-    std::pair<Threshold, Rate> GetStudentLoanData(StudentLoanPlan);
-    double GetStudentLoanThreshold(StudentLoanPlan);
-    double GetStudentLoanRate(StudentLoanPlan);
-
-#define StudentLoanThreshold(pair) (pair).first
-#define StudentLoanRate(pair) (pair).second
   };
 };
