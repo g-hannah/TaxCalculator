@@ -6,7 +6,7 @@
 
 static double GetSalary()
 {
-  double salary = 0.0;
+  double gross = 0.0;
 
   std::fstream fs;
 
@@ -27,29 +27,39 @@ static double GetSalary()
     rapidjson::Value& node = document["salary"];
 
     RAPIDJSON_ASSERT(node.IsDouble());
-    salary = node.GetDouble();
+    gross = node.GetDouble();
   }
 
-  return salary;
+  return gross;
 }
 
 int main()
 {
-  const double salary = GetSalary();
+  const double gross = GetSalary();
 
-  std::unique_ptr<UKTax::Deductors::DeductorBuilder> builder = std::make_unique<UKTax::Deductors::DeductorBuilder>();
+  try
+  {
+    std::unique_ptr<UKTax::Deductors::DeductorBuilder> builder = std::make_unique<UKTax::Deductors::DeductorBuilder>();
 
-  std::unique_ptr<UKTax::Deductors::BaseDeductor> deductor = builder
-    ->SetSalary(salary)
-    ->SetRegion(UKTax::TaxDatabase::UKRegion::eScotland)
-    ->SetStudentLoanPlan(UKTax::TaxDatabase::StudentLoanPlan::ePlan4)
-    ->Build();
+    std::unique_ptr<UKTax::Deductors::BaseTaxDeductor> deductor = builder
+      ->SetGross(gross)
+      ->SetRegion(UKTax::TaxDatabase::UKRegion::eScotland)
+      ->SetStudentLoanPlan(UKTax::TaxDatabase::StudentLoanPlan::ePlan4)
+      ->Build();
 
-  std::cerr << "\nGross Salary\n" << salary << std::endl;
+    std::cerr << "\nGross Salary\n" << gross << " GBP" << std::endl;
 
-  const double net = deductor->Deduct(salary);
+    const double net = deductor->Deduct(gross);
 
-  std::cerr << "\nNet Salary\n" << net << std::endl;
+    std::cerr << "\nNet Salary" << std::endl;
+    std::cerr << " Yearly: " << net << " GBP" << std::endl;
+    std::cerr << "Monthly: " << (net / 12.0) << " GBP" << std::endl;
+    std::cerr << " Weekly: " << (net / 52.0) << " GBP" << std::endl;
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+  }
 
   return 0;
 }
