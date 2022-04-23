@@ -16,29 +16,49 @@ namespace UKTax
     class DeductorBuilder
     {
     private:
+      /*
+       * Some taxes differ by region (income tax).
+       */
       TaxDatabase::UKRegion region;
+
+      /*
+       * If student loan deductor is required,
+       * it needs to know the student loan plan.
+       */
       TaxDatabase::StudentLoanPlan plan;
-      bool hasStudentLoan; // do we need a student loan deductor?
-      double salary;
+
+      /*
+       * Do we need a student loan deductor?
+       */
+      bool hasStudentLoan;
+
+      /*
+       * Some types of tax determine if tax is necessary based on
+       * the gross amount (and not the net amount after other taxes
+       * have been deducted), and some calculate the amount to deduct
+       * on the gross and not the current net.
+       */
+      double gross;
 
       /*
        * Both must be true when we call Build()
        */
-      bool gotSalary;
+      bool gotGross;
       bool gotRegion;
 
     public:
       DeductorBuilder() :
-        salary(0.0),
+        gross(0.0),
         region(TaxDatabase::UKRegion::eAllRegions),
         hasStudentLoan(false),
-        gotSalary(false),
-        gotRegion(false) { }
+        gotGross(false),
+        gotRegion(false)
+      {}
 
-      DeductorBuilder* SetSalary(double);
+      DeductorBuilder* SetGross(double);
       DeductorBuilder* SetRegion(TaxDatabase::UKRegion);
       DeductorBuilder* SetStudentLoanPlan(TaxDatabase::StudentLoanPlan);
-      std::unique_ptr<BaseDeductor> Build();
+      std::unique_ptr<BaseTaxDeductor> Build();
     };
   };
 };
