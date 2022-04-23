@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseDeductor.h"
+#include "BaseTaxDeductor.h"
 
 /**
  * Derived class for deducting national insurance.
@@ -11,11 +11,16 @@ namespace UKTax
 {
   namespace Deductors
   {
-    class NationalInsuranceDeductor : public BaseDeductor
+    class NationalInsuranceDeductor : public BaseTaxDeductor
     {
     public:
-      NationalInsuranceDeductor() { }
-      double Deduct(double);
+      NationalInsuranceDeductor(double gross, TaxDatabase::UKRegion region)
+      {
+        BaseTaxDeductor::gross = gross;
+        BaseTaxDeductor::region = region;
+      }
+
+      virtual double Deduct(double);
     };
   };
 };
