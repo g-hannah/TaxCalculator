@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseDeductor.h"
+#include "BaseTaxDeductor.h"
 
 /**
  * Derived class for deducting income tax.
@@ -11,24 +11,19 @@ namespace UKTax
 {
   namespace Deductors
   {
-    class IncomeTaxDeductor : public BaseDeductor
+    class IncomeTaxDeductor : public BaseTaxDeductor
     {
     public:
-      IncomeTaxDeductor() :
-        region(TaxDatabase::UKRegion::eEngland),
-        salary(0.0)
-      { }
+      IncomeTaxDeductor()
+      {}
 
-      IncomeTaxDeductor(TaxDatabase::UKRegion region, double salary) :
-        region(region),
-        salary(salary)
-      { }
+      IncomeTaxDeductor(double gross, TaxDatabase::UKRegion region)
+      {
+        this->gross = gross;
+        this->region = region;
+      }
 
-      double Deduct(double);
-
-    private:
-      TaxDatabase::UKRegion region;
-      double salary;
+      virtual double Deduct(double);
     };
   };
 };

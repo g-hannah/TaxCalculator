@@ -1,18 +1,9 @@
 #include "IncomeTax.h"
 
-using namespace UKTax;
-
-std::vector<double> IncomeTax::GetBands()
+namespace UKTax
 {
-  return bands;
-}
-
-std::vector<double> IncomeTax::GetRates()
-{
-  return rates;
-}
-
-double IncomeTax::GetNoAllowanceThreshold()
-{
-  return noAllowanceThreshold;
-}
+  TaxValue IncomeTax::GetNoAllowanceThreshold() const
+  {
+    return noAllowanceThreshold;
+  }
+};

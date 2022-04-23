@@ -12,20 +12,16 @@ namespace UKTax
   class IncomeTax : public Tax
   {
   private:
-    std::vector<double> bands;
-    std::vector<double> rates;
-    double noAllowanceThreshold;
+    TaxValue noAllowanceThreshold;
 
   public:
-    IncomeTax(std::vector<double> bands, std::vector<double> rates, double noAllowanceThreshold) :
-      bands(bands),
-      rates(rates),
+    IncomeTax(TaxValues bands, TaxValues rates, TaxValue noAllowanceThreshold) :
       noAllowanceThreshold(noAllowanceThreshold)
     {
+      Tax::bands = bands;
+      Tax::rates = rates;
     }
 
-    std::vector<double> GetBands() override;
-    std::vector<double> GetRates() override;
-    double GetNoAllowanceThreshold();
+    TaxValue GetNoAllowanceThreshold() const;
   };
 };

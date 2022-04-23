@@ -11,9 +11,15 @@ double IncomeTaxDeductor::Deduct(double amount)
 
   TaxDatabase* database = TaxDatabase::GetInstance();
 
-  IncomeTax incomeTax = database->GetIncomeTax(region);
-  std::vector<double> niBands = incomeTax.GetBands();
-  std::vector<double> niRates = incomeTax.GetRates();
+  const IncomeTax& incomeTax = database->GetIncomeTax(region);
+
+  const TaxValues niBands = incomeTax.GetBands();
+
+  /*
+   * Not const as we may need to change
+   * the value of the first rate (see below)
+   */
+  TaxValues niRates = incomeTax.GetRates();
   const double noAllowanceThreshold = incomeTax.GetNoAllowanceThreshold();
 
   /*
@@ -21,7 +27,7 @@ double IncomeTaxDeductor::Deduct(double amount)
    * there is no "personal allowance" anymore. Thus,
    * the first rate (0.0) becomes the same as the second.
    */
-  if (salary > noAllowanceThreshold)
+  if (gross > noAllowanceThreshold)
   {
     niRates[0] = niRates[1];
   }
@@ -63,5 +69,5 @@ double IncomeTaxDeductor::Deduct(double amount)
   }
 
   std::cerr << "\nIncome Tax\n" << "Total amount taxed: " << amountTaxed << "\nTotal tax: " << totalTax << std::endl;
-  return BaseDeductor::Deduct(amount - totalTax);
+  return BaseTaxDeductor::Deduct(amount - totalTax);
 }
