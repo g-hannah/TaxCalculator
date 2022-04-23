@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseDeductor.h"
+#include "BaseTaxDeductor.h"
 
 /**
  * Derived class for deducting student loan tax.
@@ -11,17 +11,19 @@ namespace UKTax
 {
   namespace Deductors
   {
-    class StudentLoanDeductor : public BaseDeductor
+    class StudentLoanDeductor : public BaseTaxDeductor
     {
     private:
       TaxDatabase::StudentLoanPlan plan;
-      double salary;
     public:
 
-      StudentLoanDeductor(TaxDatabase::StudentLoanPlan plan, double salary)
-        : plan(plan), salary(salary) { }
+      StudentLoanDeductor(double gross, TaxDatabase::StudentLoanPlan plan) :
+        plan(plan)
+      {
+        this->gross = gross;
+      }
 
-      double Deduct(double);
+      virtual double Deduct(double);
     };
   };
 };
