@@ -30,6 +30,7 @@ namespace UKTax
     ~TaxDatabase()
     {
       delete instance;
+      instance = nullptr;
     }
 
     static TaxDatabase* instance;
