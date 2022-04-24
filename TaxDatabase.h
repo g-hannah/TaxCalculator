@@ -24,8 +24,13 @@ namespace UKTax
   class TaxDatabase
   {
   private:
-    TaxDatabase() { }
-    ~TaxDatabase() { }
+    TaxDatabase()
+    {}
+
+    ~TaxDatabase()
+    {
+      delete instance;
+    }
 
     static TaxDatabase* instance;
     const std::string resourceFile = "resources/tax_data.json"; // XXX store string constants in external data file
@@ -85,8 +90,5 @@ namespace UKTax
     IncomeTax GetIncomeTax(UKRegion);
     NationalInsuranceTax GetNationalInsuranceTax(UKRegion);
     StudentLoanTax GetStudentLoanTax(StudentLoanPlan);
-
-    std::vector<double> GetNationalInsuranceRates();
-    std::vector<double> GetNationalInsuranceBands();
   };
 };
