@@ -28,10 +28,7 @@ namespace UKTax
     {}
 
     ~TaxDatabase()
-    {
-      delete instance;
-      instance = nullptr;
-    }
+    {}
 
     static TaxDatabase* instance;
     const std::string resourceFile = "resources/tax_data.json"; // XXX store string constants in external data file
